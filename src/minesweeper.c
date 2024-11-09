@@ -1,70 +1,79 @@
-#define MINESWEEPER_MINE         0xFF
-#define MINESWEEPER_MINES_COUNT  10
+#define MINESWEEPER_MINE         0x0F
+#define MINESWEEPER_MINES_COUNT  20
 
 static uint8_t minesweeper_has_mine(uint8_t *field, uint8_t x, uint8_t y)
 {
 	return field_get(field, x, y) == MINESWEEPER_MINE;
 }
 
+static void minesweeper_mark(uint8_t *field, uint8_t x, uint8_t y)
+{
+	if(x >= LED_WIDTH || y >= LED_HEIGHT) { return; }
+	field[y * LED_WIDTH + x] |= 0xC0;
+}
+
+static void minesweeper_surround(uint8_t *field, uint8_t x, uint8_t y)
+{
+	minesweeper_mark(field, x - 1, y - 1);
+	minesweeper_mark(field, x - 1, y);
+	minesweeper_mark(field, x - 1, y + 1);
+
+	minesweeper_mark(field, x,     y - 1);
+	minesweeper_mark(field, x,     y + 1);
+
+	minesweeper_mark(field, x + 1, y - 1);
+	minesweeper_mark(field, x + 1, y);
+	minesweeper_mark(field, x + 1, y + 1);
+}
+
 static uint8_t minesweeper_reveal(uint8_t *field, uint8_t x, uint8_t y)
 {
-	struct { uint8_t x, y; } stack[2 * LED_PIXELS];
-	uint8_t top = 1;
 	uint8_t f = field_get(field, x, y);
 	if(f == MINESWEEPER_MINE)
 	{
 		return 1;
 	}
 
-	stack[0].x = x;
-	stack[0].y = y;
-	while(top)
+	minesweeper_mark(field, x, y);
+
+	uint8_t remain = 1;
+	while(remain)
 	{
-		--top;
-		x = stack[top].x;
-		y = stack[top].y;
-
-		if(x >= LED_WIDTH || y >= LED_HEIGHT) { continue; }
-		f = field_get(field, x, y);
-		if(f == MINESWEEPER_MINE) { continue; }
-		if(f <= 0x08)
+		remain = 0;
+		for(uint8_t y = 0; y < LED_HEIGHT; ++y)
 		{
-			field_set(field, x, y, f + 0xF0);
+			for(uint8_t x = 0; x < LED_WIDTH; ++x)
+			{
+				uint8_t *p = field + y * LED_WIDTH + x;
+				uint8_t front = *p & 0xC0;
+				uint8_t back = *p & 0x3F;
+				if(front == 0xC0)
+				{
+					if(!back)
+					{
+						minesweeper_surround(field, x, y);
+					}
+
+					remain = 1;
+					front = 0x80;
+					if(back <= 0x08)
+					{
+						back += 0x10;
+					}
+
+					*p = front | back;
+				}
+			}
 		}
+	}
 
-		if(f) { continue; }
-
-		stack[top].x = x - 1;
-		stack[top].y = y - 1;
-		++top;
-
-		stack[top].x = x - 1;
-		stack[top].y = y;
-		++top;
-
-		stack[top].x = x - 1;
-		stack[top].y = y + 1;
-		++top;
-
-		stack[top].x = x;
-		stack[top].y = y - 1;
-		++top;
-
-		stack[top].x = x;
-		stack[top].y = y + 1;
-		++top;
-
-		stack[top].x = x + 1;
-		stack[top].y = y - 1;
-		++top;
-
-		stack[top].x = x + 1;
-		stack[top].y = y;
-		++top;
-
-		stack[top].x = x + 1;
-		stack[top].y = y + 1;
-		++top;
+	/* Unmark all */
+	for(uint8_t y = 0; y < LED_HEIGHT; ++y)
+	{
+		for(uint8_t x = 0; x < LED_WIDTH; ++x)
+		{
+			field[y * LED_WIDTH + x] &= 0x3F;
+		}
 	}
 
 	return 0;
@@ -104,12 +113,12 @@ static void minesweeper_init(uint8_t *field, uint8_t cx, uint8_t cy)
 	}
 }
 
-static uint8_t minesweeper_count(uint8_t *field)
+static uint16_t minesweeper_count(uint8_t *field)
 {
-	uint8_t count = 0;
-	for(uint8_t i = 0; i < LED_PIXELS; ++i)
+	uint16_t count = 0;
+	for(uint16_t i = 0; i < LED_PIXELS; ++i)
 	{
-		count += (field[i] < 0xF0);
+		count += (field[i] < 0x10);
 	}
 
 	return count;
@@ -119,16 +128,16 @@ static void minesweeper_set_color(uint8_t v)
 {
 	switch(v)
 	{
-	case 0xF0: led_set_color(  0,   0,   0); break;
-	case 0xF1: led_set_color(  0, 255,   0); break;
-	case 0xF2: led_set_color(127, 255,   0); break;
-	case 0xF3: led_set_color(255, 255,   0); break;
-	case 0xF4: led_set_color(255, 127,   0); break;
-	case 0xF5: led_set_color(255,   0,   0); break;
-	case 0xF6: led_set_color(255,   0, 127); break;
-	case 0xF7: led_set_color(255,   0, 255); break;
-	case 0xF8: led_set_color(127,   0, 255); break;
-	case 0xF9: led_set_color(255,   0,   0); break;
+	case 0x10: led_set_color(  0,   0,   0); break;
+	case 0x11: led_set_color(  0, 255,   0); break;
+	case 0x12: led_set_color(127, 255,   0); break;
+	case 0x13: led_set_color(255, 255,   0); break;
+	case 0x14: led_set_color(255, 127,   0); break;
+	case 0x15: led_set_color(255,   0,   0); break;
+	case 0x16: led_set_color(255,   0, 127); break;
+	case 0x17: led_set_color(255,   0, 255); break;
+	case 0x18: led_set_color(127,   0, 255); break;
+	case 0x19: led_set_color(255,   0,   0); break;
 	default:   led_set_color( 25,  25,  25); break;
 	}
 }
@@ -141,7 +150,7 @@ static void minesweeper_show_mines(uint8_t *field, uint8_t r, uint8_t g, uint8_t
 		for(uint8_t y = 0; y < LED_HEIGHT; ++y)
 		{
 			uint8_t v = field_get(field, x, y);
-			if(v == 0xFF)
+			if(v == MINESWEEPER_MINE)
 			{
 				led_set_color(r, g, b);
 			}
@@ -163,13 +172,13 @@ static uint8_t minesweeper_set_if(uint8_t *field, uint8_t x, uint8_t y)
 	}
 
 	uint8_t f = field_get(field, x, y);
-	if(f == 0xFF)
+	if(f == MINESWEEPER_MINE)
 	{
-		field_set(field, x, y, 0xF9);
+		field_set(field, x, y, 0x19);
 	}
 	else if(f <= 0x08)
 	{
-		field_set(field, x, y, f + 0xF0);
+		field_set(field, x, y, f + 0x10);
 	}
 
 	led_set_pixel(x, y);

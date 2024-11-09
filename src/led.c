@@ -56,7 +56,7 @@ static void led_clear(void)
 {
 	uint8_t n = 0;
 	uint8_t *p = led_pixels;
-	for(uint8_t i = 0; i < LED_PIXELS; ++i)
+	for(uint16_t i = 0; i < LED_PIXELS; ++i)
 	{
 		*p++ = led_color[n];
 		if(++n == 3)

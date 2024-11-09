@@ -1,8 +1,9 @@
 #include <SDL2/SDL.h>
 #include <unistd.h>
 
-#define GFX_INITIAL_WIDTH     320
-#define GFX_INITIAL_HEIGHT    320
+#define SIZE 16
+#define GFX_INITIAL_WIDTH     (SIZE * 32)
+#define GFX_INITIAL_HEIGHT    (SIZE * 32)
 #define WINDOW_TITLE             "Simulator"
 #define COLOR_WHITE              0xFFFFFFFF
 
@@ -115,13 +116,13 @@ static void ws2812(uint8_t *pixels, uint16_t count)
 		int n = i * 3;
 		SDL_SetRenderDrawColor(_renderer, pixels[n + 1], pixels[n], pixels[n + 2], 255);
 
-		int x = (i % 10);
-		int y = (i / 10);
+		int x = (i % SIZE);
+		int y = (i / SIZE);
 
-		y = (10 - 1) - y;
+		y = (SIZE - 1) - y;
 		if(!(y & 1))
 		{
-			x = (10 - 1) - x;
+			x = (SIZE - 1) - x;
 		}
 
 		SDL_Rect r = { x*32, y*32, 32, 32 };

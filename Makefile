@@ -1,13 +1,13 @@
 MCU    = atmega328p
 F_CPU  = 16000000
 OPT    = z
-TARGET = src/main
+TARGET = main
 CFLAGS =
 
 all: clean $(TARGET).elf size
 
-$(TARGET).elf: $(TARGET).c
-	@avr-gcc $(TARGET).c -o $(TARGET).elf \
+$(TARGET).elf: src/$(TARGET).c
+	@avr-gcc src/$(TARGET).c -o src/$(TARGET).elf \
 		$(CFLAGS) \
 		-DF_CPU=$(F_CPU) \
 		-O$(OPT) \
@@ -25,18 +25,18 @@ $(TARGET).elf: $(TARGET).c
 		-mmcu=$(MCU)
 
 size: $(TARGET).elf
-	@avr-size -C --mcu=$(MCU) $(TARGET).elf
-	@avr-nm --radix d --size-sort $(TARGET).elf | grep " b "
-	@avr-nm --radix d --size-sort $(TARGET).elf | grep " d "
+	@avr-size -C --mcu=$(MCU) src/$(TARGET).elf
+	@avr-nm --radix d --size-sort src/$(TARGET).elf | grep " b "
+	@avr-nm --radix d --size-sort src/$(TARGET).elf | grep " d "
 
 connect:
-	@avrdude  -c arduino -P /dev/ttyUSB0 -p m328p
+	@avrdude  -c arduino -P /dev/ttyACM0 -p m328p
 
 flash:
-	@avrdude  -c arduino -P /dev/ttyUSB0 -p m328p -U src/main.elf
+	@avrdude  -c arduino -P /dev/ttyACM0 -p m328p -U src/main.elf
 
 clean:
 	@rm -f main.elf
 
 sim:
-	gcc simulator.c -o sim -Wall -Wextra -g -O3 -lSDL2
+	gcc src/simulator.c -o sim -Wall -Wextra -g -O3 -lSDL2
