@@ -1,4 +1,4 @@
-#define GAMES_COUNT 5
+#define GAMES_COUNT 4
 
 static void preview_render(uint8_t idx)
 {
@@ -6,7 +6,7 @@ static void preview_render(uint8_t idx)
 	{
 		'T', 1,
 		'S', 2,
-		'R', 4,
+		//'R', 4,
 		'M', 3,
 		'P', 5
 	};
@@ -48,9 +48,9 @@ static void game(void)
 				default:
 				case 0: tetris();      break;
 				case 1: snake();       break;
-				case 2: stacker();     break;
-				case 3: minesweeper(); break;
-				case 4: sokoban();     break;
+				//case 2: stacker();     break;
+				case 2: minesweeper(); break;
+				case 3: sokoban();     break;
 				}
 
 				/* After game finished */

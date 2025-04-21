@@ -24,7 +24,7 @@
 
 /* Games */
 #include "snake.c"
-#include "stacker.c"
+//#include "stacker.c"
 #include "minesweeper.c"
 #include "tetris.c"
 #include "sokoban.c"

@@ -131,6 +131,7 @@ static void ws2812(uint8_t *pixels, uint16_t count)
 	SDL_RenderPresent(_renderer);
 }
 
+#include "delay.c"
 #include "led.c"
 #include "font.c"
 #include "text.c"
@@ -141,6 +142,7 @@ static void ws2812(uint8_t *pixels, uint16_t count)
 #include "stacker.c"
 #include "minesweeper.c"
 #include "tetris.c"
+#include "sokoban.c"
 #include "game.c"
 
 static void init(void)

@@ -39,4 +39,6 @@ clean:
 	@rm -f main.elf
 
 sim:
+	clear
+	rm -f sim
 	gcc src/simulator.c -o sim -Wall -Wextra -g -O3 -lSDL2
