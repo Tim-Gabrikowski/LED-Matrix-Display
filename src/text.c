@@ -98,7 +98,7 @@ static void text(const char *s)
 	text_out();
 }
 
-static char *itoa8(uint16_t v)
+static char *itoa8(uint8_t v)
 {
 	static char buf[8];
 	char *s = buf + sizeof(buf);
@@ -118,7 +118,7 @@ static void gameover(void)
 	text_P(PSTR("Game Over!"));
 }
 
-static void gameover_score(uint16_t score)
+static void gameover_score(uint8_t score)
 {
 	char buf[16] = "Score: ";
 	gameover();

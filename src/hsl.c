@@ -20,3 +20,15 @@ static void random_color(uint8_t *in, uint8_t *out)
 	out[2] = b;
 	out[3] = q;
 }
+
+static uint8_t mask_color(uint8_t color, uint8_t mask)
+{
+	return color & mask ? 0xFF : 0;
+}
+
+static void set_bits_color(uint8_t color)
+{
+	led_set_color(mask_color(color, 1),
+		mask_color(color, 2),
+		mask_color(color, 4));
+}

@@ -2,24 +2,21 @@
 
 static void preview_render(uint8_t idx)
 {
-	led_clear_black();
-
 	static const uint8_t gp[] PROGMEM =
 	{
-		'T', 255,   0,   0,
-		'S',   0, 255,   0,
-		'R',   0,   0, 255,
-		'M', 255, 255,   0,
-		'P', 255,   0, 255
+		'T', 1,
+		'S', 2,
+		'R', 4,
+		'M', 3,
+		'P', 5
 	};
 
-	const uint8_t *p = gp + 4 * idx;
+	const uint8_t *p = gp + 2 * idx;
 	uint8_t c = pgm_read_byte(p);
-	uint8_t r = pgm_read_byte(p + 1);
-	uint8_t g = pgm_read_byte(p + 2);
-	uint8_t b = pgm_read_byte(p + 3);
+	uint8_t color = pgm_read_byte(p + 1);
 
-	led_set_color(r, g, b);
+	led_clear_black();
+	set_bits_color(color);
 	render_char(c);
 	led_update();
 }
@@ -49,25 +46,11 @@ static void game(void)
 				switch(game)
 				{
 				default:
-				case 0:
-					tetris();
-					break;
-
-				case 1:
-					snake();
-					break;
-
-				case 2:
-					stacker();
-					break;
-
-				case 3:
-					minesweeper();
-					break;
-
-				case 4:
-					sokoban();
-					break;
+				case 0: tetris();      break;
+				case 1: snake();       break;
+				case 2: stacker();     break;
+				case 3: minesweeper(); break;
+				case 4: sokoban();     break;
 				}
 
 				/* After game finished */

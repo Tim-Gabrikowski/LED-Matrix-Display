@@ -135,7 +135,7 @@ static void tetris_flash_rows(uint8_t *field)
 		}
 
 		led_update();
-		_delay_ms(80);
+		delayn(80);
 
 		led_clear_black();
 		for(uint8_t y = 0; y < LED_HEIGHT; ++y)
@@ -152,7 +152,7 @@ static void tetris_flash_rows(uint8_t *field)
 		}
 
 		led_update();
-		_delay_ms(80);
+		delayn(80);
 	}
 }
 
@@ -309,7 +309,7 @@ static void tetris(void)
 	Piece cp;
 	uint16_t ticks = 0;
 	uint16_t ticks_update = 400;
-	uint16_t score = 0;
+	uint8_t score = 0;
 	uint8_t pause = 0;
 	uint8_t field[LED_PIXELS];
 

@@ -4,7 +4,7 @@
 
 typedef struct
 {
-	uint16_t x, y;
+	uint8_t x, y;
 } StackerBlock;
 
 typedef struct

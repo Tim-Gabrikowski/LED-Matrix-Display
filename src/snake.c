@@ -178,7 +178,7 @@ static void snake(void)
 	uint8_t ticks_update = 220;
 	uint8_t dir = SNAKE_PAUSE;
 	uint8_t ticks = 0;
-	uint16_t score = 0;
+	uint8_t score = 0;
 	Snake snake;
 	SnakeFood food;
 

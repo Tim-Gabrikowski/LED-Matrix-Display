@@ -133,7 +133,7 @@ static void minesweeper_set_color(uint8_t v)
 	}
 }
 
-static void minesweeper_show_mines(uint8_t *field, uint8_t r, uint8_t g, uint8_t b)
+static void minesweeper_show_mines(uint8_t *field, uint8_t r)
 {
 	led_clear_black();
 	for(uint8_t x = 0; x < LED_WIDTH; ++x)
@@ -143,7 +143,7 @@ static void minesweeper_show_mines(uint8_t *field, uint8_t r, uint8_t g, uint8_t
 			uint8_t v = field_get(field, x, y);
 			if(v == 0xFF)
 			{
-				led_set_color(r, g, b);
+				led_set_color(r, r, r);
 			}
 			else
 			{
@@ -210,32 +210,32 @@ static void minesweeper_explode(uint8_t *field, uint8_t cx, uint8_t cy)
 	uint8_t flags = 0;
 	for(uint8_t i = 0; flags != 0xF; ++i)
 	{
-		minesweeper_show_mines(field, 25, 25, 25);
+		minesweeper_show_mines(field, 25);
 		led_set_color(255, 0, 0);
 		flags |= minesweeper_rhombus(field, cx, cy, i);
 		led_update();
-		_delay_ms(80);
+		delayn(80);
 	}
 
-	minesweeper_show_mines(field, 25, 25, 25);
+	minesweeper_show_mines(field, 25);
 	led_update();
 
-	_delay_ms(2000);
+	delay10n(200);
 }
 
 static void minesweeper_flash(uint8_t *field)
 {
 	for(uint8_t i = 0; i < 3; ++i)
 	{
-		minesweeper_show_mines(field, 25, 25, 25);
+		minesweeper_show_mines(field, 25);
 		led_update();
-		_delay_ms(150);
-		minesweeper_show_mines(field, 255, 255, 255);
+		delayn(150);
+		minesweeper_show_mines(field, 255);
 		led_update();
-		_delay_ms(150);
+		delayn(150);
 	}
 
-	_delay_ms(2000);
+	delay10n(200);
 }
 
 static void minesweeper_render(uint8_t *field, uint8_t cx, uint8_t cy, uint8_t on)

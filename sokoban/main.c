@@ -1,5 +1,12 @@
 /* SOKOBAN */
 
+#include <stdio.h>
+#include <stdint.h>
+
+#define LED_WIDTH 10
+#define LED_HEIGHT 10
+#define LED_PIXELS  (LED_WIDTH * LED_HEIGHT)
+
 enum
 {
 	S_EMPTY          = 0,
@@ -11,25 +18,18 @@ enum
 	S_WALL           = 7
 };
 
-typedef struct
+static uint8_t field_get(const uint8_t *field, uint8_t x, uint8_t y)
 {
-	uint8_t x, y;
-} Position;
-
-static Position position_next(Position pos, uint8_t key)
-{
-	switch(key)
-	{
-	case KEY_DOWN_PRESSED:  { Position a = { pos.x,     pos.y + 1 }; return a; }
-	case KEY_UP_PRESSED:    { Position a = { pos.x,     pos.y - 1 }; return a; }
-	case KEY_LEFT_PRESSED:  { Position a = { pos.x - 1, pos.y     }; return a; }
-	case KEY_RIGHT_PRESSED: { Position a = { pos.x + 1, pos.y     }; return a; }
-	}
-
-	return pos;
+	return field[y * LED_WIDTH + x];
 }
 
-const uint8_t sokoban_levels[] PROGMEM =
+static void field_set(uint8_t *field, uint8_t x, uint8_t y, uint8_t v)
+{
+	field[y * LED_WIDTH + x] = v;
+}
+
+
+const uint8_t sokoban_levels[] =
 {
 	//0xff, 0xfe, 0x00, 0x03, 0xa8, 0x78, 0x00, 0x0f, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0xff, 0xf0, 0x00, 0x03, 0x83, 0xc0, 0x00, 0x0e, 0x07, 0xfc, 0x00, 0x3d, 0x40, 0x70, 0x00, 0xe0, 0x41, 0xc0, 0x03, 0x81, 0xff, 0x00, 0x0f, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -41,10 +41,11 @@ const uint8_t sokoban_levels[] PROGMEM =
 };
 
 static uint8_t cur_byte, bit, byte;
-static Position player;
 
 static uint8_t sokoban_next_bit(const uint8_t *input)
 {
+	printf("%d %d\n", bit, byte);
+
 	uint8_t v = (cur_byte & 0x80) ? 1 : 0;
 
 	cur_byte <<= 1;
@@ -53,7 +54,7 @@ static uint8_t sokoban_next_bit(const uint8_t *input)
 	{
 		bit = 8;
 		++byte;
-		cur_byte = pgm_read_byte(input + byte);
+		cur_byte = *(input + byte);
 	}
 
 	return v;
@@ -73,11 +74,7 @@ static void sokoban_load_level(uint8_t *level, const uint8_t *input)
 {
 	bit = 8;
 	byte = 0;
-	player.x = pgm_read_byte(input + byte);
-	++byte;
-	player.y = pgm_read_byte(input + byte);
-	++byte;
-	cur_byte = pgm_read_byte(input + byte);
+	cur_byte = *(input);
 
 	for(uint8_t i = 0; i < LED_PIXELS; ++i)
 	{
@@ -101,93 +98,49 @@ static uint8_t sokoban_win(uint8_t *level)
 	return 1;
 }
 
+static int sbc(int c)
+{
+	switch(c)
+	{
+	case 0: return ' ';
+	case 1: return '.';
+	case 2: return '@';
+	case 3: return '+';
+	case 4: return '$';
+	case 5: return '*';
+	case 7: return '#';
+	}
+}
+
+static uint8_t sokoban_color(uint8_t color, uint8_t mask)
+{
+	return color & mask ? 0xFF : 0;
+}
+
 static void sokoban_draw(uint8_t *level)
 {
-	led_clear_black();
 	for(uint8_t y = 0; y < LED_HEIGHT; ++y)
 	{
 		for(uint8_t x = 0; x < LED_WIDTH; ++x)
 		{
 			uint8_t color = field_get(level, x, y);
-			set_bits_color(color);
-			led_set_pixel(x, y);
-		}
-	}
+			/*led_set_color(sokoban_color(color, 0),
+				sokoban_color(color, 1),
+				sokoban_color(color, 2));*/
 
-	led_update();
+			printf("%c", sbc(color));
+		}
+
+		printf("\n");
+	}
 }
 
-static uint8_t sokoban_move(uint8_t *level, uint8_t key)
-{
-	Position a = position_next(player, key);
-	Position b = position_next(a, key);
-	uint8_t at = field_get(level, a.x, a.y);
-
-	switch(at)
-	{
-	case S_EMPTY:
-	case S_GOAL:
-		break;
-
-	case S_BOX:
-		{
-			uint8_t bt = field_get(level, b.x, b.y);
-			if(bt != S_EMPTY && bt != S_GOAL)
-			{
-				return 0;
-			}
-
-			field_set(level, a.x, a.y, S_EMPTY);
-			field_set(level, b.x, b.y, bt == S_GOAL ? S_BOX_ON_GOAL : S_BOX);
-		}
-		break;
-
-	case S_BOX_ON_GOAL:
-		{
-			uint8_t bt = field_get(level, b.x, b.y);
-			if(bt != S_EMPTY && bt != S_GOAL)
-			{
-				return 0;
-			}
-
-			field_set(level, a.x, a.y, S_GOAL);
-			field_set(level, b.x, b.y, bt == S_GOAL ? S_BOX_ON_GOAL : S_BOX);
-		}
-		break;
-
-	default:
-		return 0;
-	}
-
-	player = a;
-	sokoban_draw(level);
-	return 1;
-}
-
-static void sokoban(void)
+int main(void)
 {
 	uint8_t level[LED_PIXELS];
-	uint8_t cur_level = 0;
 
 	sokoban_load_level(level, sokoban_levels);
 	sokoban_draw(level);
-	for(;;)
-	{
-		uint8_t key;
-		while((key = key_get()))
-		{
-			switch(key)
-			{
-			case KEY_ESCAPE_PRESSED:
-				return;
 
-			case KEY_RIGHT_PRESSED:
-			case KEY_LEFT_PRESSED:
-			case KEY_UP_PRESSED:
-			case KEY_DOWN_PRESSED:
-				sokoban_move(level, key);
-				break;
-			}
-		}
-	}
+	return 0;
 }

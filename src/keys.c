@@ -19,9 +19,9 @@ enum
 
 #define BTN_TICKS    50
 #define BTN_COUNT     6
-#define BTN_REPEAT  300
+#define BTN_REPEAT  250
 
-static uint16_t btn_ticks[BTN_COUNT];
+static uint8_t btn_ticks[BTN_COUNT];
 static uint8_t events[BTN_COUNT];
 static int8_t event_count = -1;
 

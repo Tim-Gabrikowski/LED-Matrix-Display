@@ -18,8 +18,8 @@ It creates the C-Array in `levels.c.txt`. Every 38 bytes (1 line) is one of the 
 | :-: | :-: | :- |
 | ` ` | `000` | Empty |
 | `.` | `001` | Goal |
-| `+` | `011` | Player on a Goal |
 | `@` | `010` | Player |
+| `+` | `011` | Player on a Goal |
 | `$` | `100` | Box |
 | `*` | `101` | Box on a Goal |
 | `#` | `111` | Wall |
