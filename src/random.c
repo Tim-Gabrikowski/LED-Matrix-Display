@@ -1,4 +1,4 @@
-#define ADC_CHANNEL_NOISE 5
+#define ADC_CHANNEL_NOISE 0
 
 static void random_init(void)
 {

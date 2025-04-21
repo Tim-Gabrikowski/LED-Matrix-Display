@@ -1,5 +1,5 @@
-MCU    = atmega328p
-F_CPU  = 16000000
+MCU    = atmega8
+F_CPU  = 11059200
 OPT    = z
 TARGET = main
 CFLAGS =

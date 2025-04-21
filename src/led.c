@@ -1,5 +1,5 @@
-#define LED_WIDTH            16
-#define LED_HEIGHT           16
+#define LED_WIDTH            10
+#define LED_HEIGHT           10
 #define LED_PIXELS             (LED_WIDTH * LED_HEIGHT)
 #define LED_BYTES              (3 * LED_PIXELS)
 
@@ -56,7 +56,7 @@ static void led_clear(void)
 {
 	uint8_t n = 0;
 	uint8_t *p = led_pixels;
-	for(uint16_t i = 0; i < LED_PIXELS; ++i)
+	for(uint8_t i = 0; i < 100; ++i)
 	{
 		*p++ = led_color[n];
 		if(++n == 3)

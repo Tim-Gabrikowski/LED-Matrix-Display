@@ -1,6 +1,6 @@
 #define WS2812_OUT         PORTC
 #define WS2812_DIR         DDRC
-#define WS2812_PIN         0
+#define WS2812_PIN        1
 
 #define W_ZERO_PULSE    350
 #define W_ONE_PULSE     900

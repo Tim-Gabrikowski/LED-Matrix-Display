@@ -30,36 +30,9 @@
 
 int main(void)
 {
-	/* Init */
 	adc_init();
 	random_init();
 	buttons_init();
-
-#if 0
-	/* Detect corners */
-	led_set_color(255, 0, 0);
-	led_set_pixel(0, 0);
-
-	led_set_color(0, 255, 0);
-	led_set_pixel(LED_WIDTH - 1, 0);
-
-	led_set_color(0, 0, 255);
-	led_set_pixel(0, LED_HEIGHT - 1);
-
-	led_set_color(255, 255, 0);
-	led_set_pixel(LED_WIDTH - 1, LED_HEIGHT - 1);
-
-	led_update();
-	_delay_ms(5000);
-#endif
-
-#if 1
-	/* Test */
-	led_set_color(255, 255, 0);
-	text_P(PSTR("Welcome!"));
-#endif
-
 	game();
-
 	return 0;
 }
