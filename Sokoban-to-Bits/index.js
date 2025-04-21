@@ -22,7 +22,12 @@ function parseLevel(l) {
 
   lines = lines.map((l) => [...l, ...Array(10).fill(" ")].splice(0, 10));
 
+  // console.log(JSON.stringify(lines));
+
   let out = "";
+
+  let playerX = 0;
+  let playerY = 0;
 
   for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
@@ -31,10 +36,14 @@ function parseLevel(l) {
           out += "001";
           break;
         case "@": // Player
-          out += "010";
+          out += "000";
+          playerX = j;
+          playerY = i;
           break;
         case "+": // Player on Goal
-          out += "011";
+          out += "001";
+          playerX = j;
+          playerY = i;
           break;
         case "$": // Box
           out += "100";
@@ -52,7 +61,11 @@ function parseLevel(l) {
     }
   }
 
-  let bytes = out.match(/.{1,8}/g).map((byte) => parseInt(byte, 2));
+  let bytes = [
+    playerX,
+    playerY,
+    ...out.match(/.{1,8}/g).map((byte) => parseInt(byte, 2)),
+  ];
 
   let hex = bytes.map((byte) => byte.toString(16).padStart(2, "0"));
 
