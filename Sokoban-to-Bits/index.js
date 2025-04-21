@@ -27,25 +27,25 @@ function parseLevel(l) {
   for (let i = 0; i < lines.length; i++) {
     for (let j = 0; j < lines[i].length; j++) {
       switch (lines[i][j]) {
-        case "@":
+        case ".": // Goal
           out += "001";
           break;
-        case "#":
+        case "@": // Player
           out += "010";
           break;
-        case ".":
+        case "+": // Player on Goal
           out += "011";
           break;
-        case "$":
+        case "$": // Box
           out += "100";
           break;
-        case "+":
+        case "*": // Box on Goal
           out += "101";
           break;
-        case "*":
-          out += "110";
+        case "#": // Wall
+          out += "111";
           break;
-        default:
+        default: // empty / default
           out += "000";
           break;
       }
