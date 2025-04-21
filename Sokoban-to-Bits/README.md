@@ -2,14 +2,25 @@
 
 Convert Sokoban Level TXT file to 3-bit compressed level format
 
+## Run
+
+Fill level files to `levels/` and run using `node`
+
+```sh
+node index.js
+```
+
+It creates the C-Array in `levels.c.txt`. Every 38 bytes (1 line) is one of the level files
+
 ## Cell Types
 
-```
-0. Empty
-1. @ Player
-2. # Wall
-3. . Goal
-4. $ Box
-5. + Player on Goal
-6. * Box on Goal
-```
+| char | bits | description |
+| :-: | :-: | :- |
+| ` ` | `000` | Empty |
+| `@` | `001` | Player |
+| `#` | `010` | Wall |
+| `.` | `011` | Goal |
+| `$` | `100` | Box |
+| `+` | `101` | Player on a Goal |
+| `*` | `110` | Box on a Goal |
+
