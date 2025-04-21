@@ -26,6 +26,7 @@
 #include "stacker.c"
 #include "minesweeper.c"
 #include "tetris.c"
+#include "sokoban.c"
 #include "game.c"
 
 int main(void)
