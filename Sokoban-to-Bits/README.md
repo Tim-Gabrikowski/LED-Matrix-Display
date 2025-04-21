@@ -14,13 +14,12 @@ It creates the C-Array in `levels.c.txt`. Every 38 bytes (1 line) is one of the 
 
 ## Cell Types
 
-| char | bits | description |
+| char | bits (RGB) | description |
 | :-: | :-: | :- |
 | ` ` | `000` | Empty |
-| `@` | `001` | Player |
-| `#` | `010` | Wall |
-| `.` | `011` | Goal |
+| `.` | `001` | Goal |
+| `+` | `011` | Player on a Goal |
+| `@` | `010` | Player |
 | `$` | `100` | Box |
-| `+` | `101` | Player on a Goal |
-| `*` | `110` | Box on a Goal |
-
+| `*` | `101` | Box on a Goal |
+| `#` | `111` | Wall |
