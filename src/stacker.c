@@ -196,6 +196,6 @@ static void stacker(void)
 			stacker_render(&stacker, board, color);
 		}
 
-		_delay_ms(1);
+		delay1();
 	}
 }

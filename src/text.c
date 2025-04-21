@@ -14,7 +14,7 @@ static uint8_t wait_check_cancel(void)
 			}
 		}
 
-		_delay_ms(1);
+		delay1();
 	}
 
 	return 0;

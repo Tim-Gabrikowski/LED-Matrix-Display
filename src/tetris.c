@@ -419,6 +419,6 @@ static void tetris(void)
 			}
 		}
 
-		_delay_ms(1);
+		delay1();
 	}
 }

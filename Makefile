@@ -30,10 +30,10 @@ size: $(TARGET).elf
 	@avr-nm --radix d --size-sort src/$(TARGET).elf | grep " d "
 
 connect:
-	@avrdude  -c arduino -P /dev/ttyUSB0 -p m328p
+	avrdude -c stk500v2 -P /dev/ttyUSB0 -p m8
 
 flash:
-	@avrdude  -c arduino -P /dev/ttyUSB0 -p m328p -U src/main.elf
+	avrdude -c stk500v2 -P /dev/ttyUSB0 -p m8 -U src/main.elf
 
 clean:
 	@rm -f main.elf

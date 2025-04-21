@@ -377,6 +377,6 @@ static void minesweeper(void)
 			}
 		}
 
-		_delay_ms(1);
+		delay1();
 	}
 }

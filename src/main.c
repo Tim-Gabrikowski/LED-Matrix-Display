@@ -14,6 +14,7 @@
 #include "ws2812.c"
 
 /* Utilities */
+#include "delay.c"
 #include "random.c"
 #include "led.c"
 #include "font.c"

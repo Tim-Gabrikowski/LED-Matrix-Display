@@ -1,4 +1,4 @@
-#define GAMES_COUNT 4
+#define GAMES_COUNT 5
 
 static void preview_render(uint8_t idx)
 {
@@ -36,12 +36,12 @@ static void game(void)
 			switch(key)
 			{
 			case KEY_RIGHT_PRESSED:
-				if(game == 3) { game = 0; } else { ++game; }
+				if(game == GAMES_COUNT - 1) { game = 0; } else { ++game; }
 				preview_render(game);
 				break;
 
 			case KEY_LEFT_PRESSED:
-				if(!game) { game = 3; } else { --game; }
+				if(!game) { game = GAMES_COUNT - 1; } else { --game; }
 				preview_render(game);
 				break;
 
@@ -64,6 +64,10 @@ static void game(void)
 				case 3:
 					minesweeper();
 					break;
+
+				case 4:
+					sokoban();
+					break;
 				}
 
 				/* After game finished */
@@ -72,6 +76,6 @@ static void game(void)
 			}
 		}
 
-		_delay_ms(1);
+		delay1();
 	}
 }
